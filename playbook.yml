@@ -1,0 +1,29 @@
+---
+- name: Instalar y configurar servidor web
+  hosts: ansible1
+  become: yes  # Para ejecutar tareas con sudo
+
+  tasks:
+    - name: Instalar Nginx
+      apt:
+        name: nginx
+        state: present  # Asegurar que Nginx esté instalado
+      become: yes
+
+    - name: Detener servicio de Nginx
+      service:
+        name: nginx
+        state: stopped  # Detener el servicio de Nginx para editar archivos
+      become: yes
+
+    - name: Copiar archivo HTML personalizado
+      template:
+        src: custom_message.html.j2  # Archivo HTML personalizado
+        dest: /var/www/html/index.html  # Ruta del archivo HTML en el servidor
+      become: yes
+
+    - name: Iniciar servicio de Nginx
+      service:
+        name: nginx
+        state: started  # Iniciar el servicio de Nginx con la configuración actualizada
+      become: yes
